@@ -18,10 +18,7 @@ async fn main() {
     tracing_subscriber::fmt::init();
     // tracing_subscriber::fmt().json().init();
 
-    let app = Router::new()
-        .route("/", get(root))
-        .route("/greet", get(greet))
-        .route("/greet", post(greet_post));
+    let app = create_app();
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
 
     tracing::debug!("listening on {addr}");
@@ -29,6 +26,13 @@ async fn main() {
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
 
     axum::serve(listener, app).await.unwrap();
+}
+
+fn create_app() -> Router {
+    Router::new()
+        .route("/", get(root))
+        .route("/greet", get(greet))
+        .route("/greet", post(greet_post))
 }
 
 async fn root() -> &'static str {
