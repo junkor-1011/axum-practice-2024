@@ -15,8 +15,11 @@ const LOG_LEVEL_ENV: &str = "RUST_LOG";
 async fn main() {
     let log_level = env::var(LOG_LEVEL_ENV).unwrap_or("info".to_string());
     env::set_var(LOG_LEVEL_ENV, log_level);
-    tracing_subscriber::fmt::init();
-    // tracing_subscriber::fmt().json().init();
+    // tracing_subscriber::fmt::init();
+    tracing_subscriber::fmt()
+        .json()
+        .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
+        .init();
 
     let app = create_app();
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
