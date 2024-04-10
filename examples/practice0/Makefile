@@ -1,9 +1,9 @@
 .PHONY: clean build debug-start
 
-target/release/axum-practice-2024:
+target/release/practice0:
 	cargo build --release
 
-build: target/release/axum-practice-2024
+build: target/release/practice0
 
 debug-start:
 	RUST_LOG=debug cargo run
