@@ -10,5 +10,5 @@ repos:
     hooks:
       - id: fmt
         args: ['--verbose', '--']
-      # - id: cargo-check
-      # - id: clippy
+      - id: cargo-check
+      - id: clippy

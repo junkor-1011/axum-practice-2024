@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "examples/practice0",
+]
+resolver = "2"
+
+[workspace.dependencies]

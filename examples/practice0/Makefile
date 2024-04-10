@@ -9,4 +9,5 @@ debug-start:
 	RUST_LOG=debug cargo run
 
 clean:
-	cargo clean
+	# cargo clean
+	rm -rf target
