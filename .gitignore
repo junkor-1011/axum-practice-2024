@@ -1,3 +1,8 @@
+*.zip
+*.tgz
+*.tar.gz
+*.tar.xz
+
 /target
 
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,rust,rust-analyzer,vim,emacs,intellij+all,macos,windows,linux
