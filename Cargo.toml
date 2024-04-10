@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "examples/practice0",
+    "examples/practice1",
 ]
 resolver = "2"
 
