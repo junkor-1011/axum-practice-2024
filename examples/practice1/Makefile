@@ -1,4 +1,4 @@
-.PHONY: build build-musl build-aarch64 build-aarch64-musl debug-start start start-gnu start-musl stop clean
+.PHONY: build build-gnu build-musl build-aarch64 build-aarch64-musl debug-start start start-gnu start-musl stop clean test
 
 target/x86_64-unknown-linux-gnu/release/practice1:
 	cargo zigbuild --release --target x86_64-unknown-linux-gnu.2.36 --target-dir target
@@ -44,5 +44,11 @@ stop:
 	docker compose down
 
 clean:
-	# cargo clean
+	cargo clean
 	rm -rf target
+
+test:
+	cargo test
+
+# audit:
+# 	cargo audit
