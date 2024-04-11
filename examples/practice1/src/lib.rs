@@ -1,5 +1,9 @@
-use axum::Router;
+use axum::{routing::get, Router};
+use handlers::hello;
+
+mod handlers;
 
 pub fn create_app() -> Router {
-    Router::new()
+    Router::new().
+        route("/", get(hello))
 }
