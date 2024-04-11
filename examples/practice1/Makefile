@@ -34,6 +34,12 @@ start-gnu: build-gnu
 start-musl: build-musl
 	docker compose -f compose-x86_64-musl.yaml build; docker compose -f compose-x86_64-musl.yaml up -d
 
+start-aarch64: build-aarch64
+	docker compose -f compose-aarch64-gnu.yaml build; docker compose -f compose-aarch64-gnu.yaml up -d
+
+start-aarch64-musl: build-aarch64-musl
+	docker compose -f compose-aarch64-musl.yaml build; docker compose -f compose-aarch64-musl.yaml up -d
+
 stop:
 	docker compose down
 

@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      dockerfile: ./aarch64-gnu.Dockerfile
+    ports:
+      - ${PORT:-3000}:3000
+    init: true
+    environment:
+      RUST_LOG: ${RUST_LOG:-info}
+    platform: linux/arm64/v8
