@@ -4,6 +4,5 @@ use handlers::hello;
 mod handlers;
 
 pub fn create_app() -> Router {
-    Router::new().
-        route("/", get(hello))
+    Router::new().route("/", get(hello))
 }
