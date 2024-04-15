@@ -1,12 +1,12 @@
 use axum::{http::StatusCode, response::IntoResponse};
 
 pub async fn get_ipv4() -> Result<String, CustomError> {
-    let ipv4 = reqwest::get("https://checkip.amazonaws.com")
-        .await?
-        .text()
-        .await?
-        .trim()
-        .to_string();
+    let res = reqwest::get("https://checkip.amazonaws.com").await?;
+
+    tracing::info!("Response: {:?} {}", res.version(), res.status());
+    tracing::info!("Headers: {:#?}", res.headers());
+
+    let ipv4 = res.text().await?.trim().to_string();
 
     Ok(ipv4)
 }
