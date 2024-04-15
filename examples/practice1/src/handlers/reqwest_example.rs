@@ -1,5 +1,6 @@
 use axum::{http::StatusCode, response::IntoResponse};
 
+#[tracing::instrument]
 pub async fn get_ipv4() -> Result<String, CustomError> {
     let res = reqwest::get("https://checkip.amazonaws.com").await?;
 

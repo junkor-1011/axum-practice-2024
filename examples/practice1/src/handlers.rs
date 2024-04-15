@@ -2,7 +2,10 @@ use axum::response::Html;
 
 pub mod reqwest_example;
 
+#[tracing::instrument]
 pub async fn hello() -> Html<String> {
+    tracing::info!("hello invoked.");
+
     let dt = chrono::Utc::now();
 
     Html(format!(
