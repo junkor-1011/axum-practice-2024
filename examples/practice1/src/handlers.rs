@@ -1,5 +1,7 @@
 use axum::response::Html;
 
+pub mod reqwest_example;
+
 pub async fn hello() -> Html<String> {
     let dt = chrono::Utc::now();
 

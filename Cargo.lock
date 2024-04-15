@@ -708,6 +708,7 @@ dependencies = [
 name = "practice1"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "axum",
  "chrono",
  "reqwest",
