@@ -7,3 +7,30 @@ services:
     init: true
     environment:
       RUST_LOG: ${RUST_LOG:-info}
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:v1.7.0
+    container_name: node_exporter
+    hostname: node_exporter
+    ports:
+      - 9100:9100
+    pid: "service:app"
+  prometheus:
+    image: quay.io/prometheus/prometheus:v2.51.2
+    container_name: prometheus
+    hostname: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prom_data:/prometheus
+  grafana:
+    image: docker.io/grafana/grafana:10.4.2
+    container_name: grafana
+    hostname: grafana
+    ports:
+      - ${GRAFANA_PORT:-13000}:3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:-grafana}
+volumes:
+  prom_data:
