@@ -1,4 +1,7 @@
-use axum::response::Html;
+use axum::{
+    http::StatusCode,
+    response::{Html, IntoResponse},
+};
 
 pub mod reqwest_example;
 
@@ -21,4 +24,16 @@ pub async fn hello() -> Html<String> {
 </html>",
         dt
     ))
+}
+
+#[tracing::instrument]
+pub async fn response_404() -> impl IntoResponse {
+    (
+        StatusCode::NOT_FOUND,
+        serde_json::json!({
+          "status": StatusCode::NOT_FOUND.as_u16(),
+          "message": "not found",
+        })
+        .to_string(),
+    )
 }
