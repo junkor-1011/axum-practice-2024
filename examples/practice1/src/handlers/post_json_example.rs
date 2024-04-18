@@ -1,4 +1,8 @@
-use axum::{extract::Path, http::StatusCode, Json};
+use axum::{
+    extract::{Path, State},
+    http::StatusCode,
+    Json,
+};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
@@ -6,9 +10,11 @@ use crate::utils::validation::ValidatedJson;
 
 #[tracing::instrument]
 pub async fn handler(
+    // headers: HeaderMap<HashMap<String, String>>,
     Path((item, id)): Path<(String, u32)>,
+    State(client): State<reqwest::Client>,
     ValidatedJson(payload): ValidatedJson<PayloadSchema>,
-) -> (StatusCode, Json<ResponseSchema>) {
+) -> Result<(StatusCode, Json<ResponseSchema>), (StatusCode, String)> {
     tracing::debug!("invoke post_json_example handler");
 
     println!(
@@ -16,7 +22,29 @@ pub async fn handler(
         serde_json::json!(payload)
     );
 
-    (
+    let ipv4 = client
+        .get("https://checkip.amazonaws.com")
+        .send()
+        .await
+        .map_err(|_| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "failed to get ipv4".to_string(),
+            )
+        })?
+        .text()
+        .await
+        .map_err(|_err| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "response is not text".to_string(),
+            )
+        })?
+        .trim()
+        .to_string();
+    tracing::debug!("ipv4: {ipv4}");
+
+    Ok((
         StatusCode::CREATED,
         Json(ResponseSchema {
             message: "succeeded.".to_string(),
@@ -26,7 +54,7 @@ pub async fn handler(
                 summary_message: payload.summary,
             },
         }),
-    )
+    ))
 }
 
 #[derive(Debug, Serialize, Deserialize, Validate)]
