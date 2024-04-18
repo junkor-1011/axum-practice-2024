@@ -3,6 +3,7 @@ use axum::{
     response::{Html, IntoResponse},
 };
 
+pub mod post_json_example;
 pub mod reqwest_example;
 
 #[tracing::instrument]
