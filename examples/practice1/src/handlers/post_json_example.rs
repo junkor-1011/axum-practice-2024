@@ -1,6 +1,6 @@
 use axum::{
     extract::{Path, State},
-    http::StatusCode,
+    http::{HeaderMap, StatusCode},
     Json,
 };
 use serde::{Deserialize, Serialize};
@@ -10,12 +10,14 @@ use crate::utils::validation::ValidatedJson;
 
 #[tracing::instrument]
 pub async fn handler(
-    // headers: HeaderMap<HashMap<String, String>>,
+    headers: HeaderMap,
     Path((item, id)): Path<(String, u32)>,
     State(client): State<reqwest::Client>,
     ValidatedJson(payload): ValidatedJson<PayloadSchema>,
 ) -> Result<(StatusCode, Json<ResponseSchema>), (StatusCode, String)> {
     tracing::debug!("invoke post_json_example handler");
+
+    println!("headers: {headers:#?}");
 
     println!(
         "item: {item}, id: {id}, payload: {}",
