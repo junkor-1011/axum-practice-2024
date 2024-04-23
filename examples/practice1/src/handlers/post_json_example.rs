@@ -1,6 +1,11 @@
 use axum::{
-    extract::{Path, State},
-    http::{HeaderMap, StatusCode},
+    async_trait,
+    extract::{FromRequestParts, Path, State},
+    http::{
+        header::{AUTHORIZATION, HOST},
+        request::Parts,
+        HeaderMap, StatusCode,
+    },
     Json,
 };
 use serde::{Deserialize, Serialize};
@@ -10,14 +15,20 @@ use crate::utils::validation::ValidatedJson;
 
 #[tracing::instrument]
 pub async fn handler(
-    headers: HeaderMap,
+    headers: Headers,
     Path((item, id)): Path<(String, u32)>,
     State(client): State<reqwest::Client>,
     ValidatedJson(payload): ValidatedJson<PayloadSchema>,
 ) -> Result<(StatusCode, Json<ResponseSchema>), (StatusCode, String)> {
     tracing::debug!("invoke post_json_example handler");
 
-    println!("headers: {headers:#?}");
+    //println!("headers: {headers:#?}");
+    if let Some(authorization) = headers.authorization {
+        println!("Authorization Header: {authorization}");
+    }
+    if let Some(host) = headers.host {
+        println!("Host Header: {host}");
+    }
 
     println!(
         "item: {item}, id: {id}, payload: {}",
@@ -85,4 +96,53 @@ struct SummaryItem {
     id: u32,
     item_name: String,
     summary_message: String,
+}
+
+#[derive(Debug)]
+pub struct Headers {
+    authorization: Option<String>,
+    host: Option<String>,
+}
+
+#[async_trait]
+impl<S> FromRequestParts<S> for Headers
+where
+    S: Send + Sync,
+{
+    type Rejection = (StatusCode, String);
+
+    async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+        let headers = HeaderMap::from_request_parts(parts, state)
+            .await
+            .map_err(|err| {
+                (
+                    StatusCode::BAD_REQUEST, // TMP
+                    format!("error: {err:#?}"),
+                )
+            })?;
+
+        let authorization = if headers.contains_key(AUTHORIZATION) {
+            let val = match headers[AUTHORIZATION].to_str() {
+                Ok(val) => Some(val.to_string()),
+                Err(_) => None,
+            };
+            val
+        } else {
+            None
+        };
+        let host = if headers.contains_key(HOST) {
+            let val = match headers[HOST].to_str() {
+                Ok(val) => Some(val.to_string()),
+                Err(_) => None,
+            };
+            val
+        } else {
+            None
+        };
+
+        Ok(Self {
+            authorization,
+            host,
+        })
+    }
 }
