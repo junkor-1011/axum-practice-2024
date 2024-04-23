@@ -4,6 +4,8 @@ use axum::{
     Router,
 };
 use handlers::{hello, post_json_example, reqwest_example::get_ipv4, response_404};
+use tower::ServiceBuilder;
+use tower_http::timeout::TimeoutLayer;
 
 mod handlers;
 pub mod utils;
@@ -19,6 +21,7 @@ pub fn create_app() -> Router {
         .route("/item/:item/id/:id", post(post_json_example::handler))
         .fallback(response_404)
         .with_state(state)
+        .layer(ServiceBuilder::new().layer(TimeoutLayer::new(std::time::Duration::from_secs(5))))
 }
 
 #[derive(Clone, FromRef)]
